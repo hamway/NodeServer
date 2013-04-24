@@ -10,12 +10,9 @@ http.createServer(function (req, res) {
     app.setServer();
     if(api.url != "/favicon.ico") {
         app.call();
-        res.end();
     } else {
         app.favicon();
-        res.end();
     }
-
 }).listen(app.config.http.port, app.config.http.host);
 
 console.log('Server running at http://' + app.config.http.host + ':' + app.config.http.port + '/');
