@@ -1,27 +1,22 @@
 var http = require('http');
-var url = require('url');
 var app = require('app');
+var api = require('api');
 
 app.prepare();
-/*
+
 http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  parse_url(res, req.url);
-  res.end();
-}).listen(1337, '127.0.0.1');
-console.log('Server running at http://127.0.0.1:1337/');
+    api.url = req.url;
+    api.res = res;
+    app.setServer();
+    if(api.url != "/favicon.ico") {
+        app.call();
+        res.end();
+    } else {
+        app.favicon();
+        res.end();
+    }
 
-function parse_url(res, parsed) {
-  if(parsed == "/favicon.ico") {
-    res.end();
-  } else {
-      params = url.parse(parsed);
-      switch (params.pathname) {
-          case "/getCountry":
+}).listen(app.config.http.port, app.config.http.host);
 
-              break;
-          default: res.write('Api method not registred');
-      }
-    console.log(url.parse(parsed));
-  }
-}*/
+console.log('Server running at http://' + app.config.http.host + ':' + app.config.http.port + '/');
+
