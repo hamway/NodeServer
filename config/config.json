@@ -1,6 +1,6 @@
 {
     "debug": false,
-    "serverName" : "Node.JS",
+    "serverName" : "Node.JS/0.10.5",
     "index": "index.html",
     "http": {
         "host": "127.0.0.1",
