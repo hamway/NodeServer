@@ -1,8 +1,10 @@
 var http = require('http');
 var app = require('app');
 var api = require('api');
+var stats = require('stats');
 
 app.prepare();
+stats.start();
 
 http.createServer(function (req, res) {
     api.url = req.url;
