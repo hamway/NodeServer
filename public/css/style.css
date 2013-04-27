@@ -1,0 +1,10 @@
+.navbar .nav>li>a.disable {
+    color: #909090;
+    text-decoration: none;
+}
+
+.navbar .nav>li>a.disable:hover {
+    color: #909090;
+    cursor: default;
+    text-decoration: none;
+}
