@@ -44,12 +44,16 @@ function getDateList(time) {
             month = (month < 10) ? "0" + month : month;
         }
 
+        if (typeof day == 'number') {
+            day = (day < 10) ? "0" + day : day;
+        }
+
 
         list.push(day + '-' + month + '-' + year)
     }
     list.reverse();
-    list[list.length - 1] = 'Сегодня';
-    list[list.length - 2] = 'Вчера';
+    /*list[list.length - 1] = 'Сегодня';
+    list[list.length - 2] = 'Вчера';*/
 
     return list;
 }
@@ -64,16 +68,25 @@ function getDateFromServer(time) {
     month = (month < 10) ? "0" + month : month;
 
     var key = month + ':' + year;
+    var list = [];
 
-    $.get('/status/date?key='+key,function(resp) {
-        console.log(resp);
-    })
+    $.ajax({
+        url: '/status/date?key='+key,
+        async: false,
+        success: function(resp) {
+            for (var key in resp) {
+                list.push(resp[key] + '-' + month + '-' + year);
+            }
+        },
+        dataType: 'json'
+    });
 }
 
 function renderDateList() {
     var list = getDateList('now');
+    var dslist = getDateFromServer('now');
 
-    dslist = getDateFromServer('now');
+    console.log(list);
 }
 
 $(document).ready(function () {

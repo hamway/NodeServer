@@ -15,7 +15,6 @@ http.createServer(function (req, res) {
     } else {
         app.favicon();
     }
-    api.res.end();
 }).listen(app.config.http.port, app.config.http.host);
 
 console.log('Server running at http://' + app.config.http.host + ':' + app.config.http.port + '/');
