@@ -14,4 +14,5 @@ Installation
 
 Current version
 ---------------
-dev-0.1.0
+Development: 0.1.0
+Stable: None
