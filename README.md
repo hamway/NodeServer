@@ -8,6 +8,8 @@ Installation
 
     npm -g install bower
 	bower install
+	npm install
+	npm start
 
 Current version
 ---------------

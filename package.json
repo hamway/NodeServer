@@ -10,6 +10,7 @@
     "ejs": "*",
     "express-ejs-layouts": "0.3.1",
     "less-middleware": "*",
+    "underscore": "1.6.0",
     "redis": "*",
     "jasmine-node": "*"
   }

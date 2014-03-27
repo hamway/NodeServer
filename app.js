@@ -5,7 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes');
-var status = require('./routes/status');
+var Status = require('./controllers/Status');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
@@ -35,7 +35,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/status', status.index);
+app.all('/status*', Status.run);
 app.get('/users', user.list);
 
 http.createServer(app).listen(config.port, function(){
