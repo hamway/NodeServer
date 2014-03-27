@@ -1,11 +1,7 @@
 {
     "debug": false,
-    "serverName" : "Node.JS/0.10.5",
+    "serverName" : "Node.JS/0.10.15",
     "index": "index.html",
-    "http": {
-        "host": "127.0.0.1",
-        "port": 1337
-    },
     "redis": {
         "host": "127.0.0.1",
         "port": 6379,
