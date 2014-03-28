@@ -4,5 +4,5 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Small Api Server' });
+  res.render('index/index', { title: 'Small Api Server' });
 };

@@ -3,19 +3,22 @@
  * Module dependencies.
  */
 
-var express = require('express');
-var routes = require('./routes');
+var express = require('express'),
+    errorHandler = require('express-error-handler'),
+    routes = require('./routes'),
+    user = require('./routes/user'),
+    http = require('http'),
+    path = require('path'),
+    config = require('./config')();
+
+
 var Status = require('./controllers/Status');
-var user = require('./routes/user');
-var http = require('http');
-var path = require('path');
-var config = require('./config')();
 
 var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views/templates'));
 app.set('view engine', 'ejs');
 app.use(require('express-ejs-layouts'));
 app.use(express.favicon());
@@ -34,10 +37,25 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+// Routes
 app.get('/', routes.index);
-app.all('/status*', Status.run);
-app.get('/users', user.list);
 
-http.createServer(app).listen(config.port, function(){
+// Status
+app.all('/status', function (req,res,next) {
+    Status.run(req,res,next);
+});
+
+app.all('/status/json', function (req,res,next) {
+    Status.runJson(req,res,next);
+});
+
+app.all('/status*', function (req,res,next) {
+    Status.runError(req,res,next);
+});
+
+var server = http.createServer(app);
+app.use( errorHandler({server: server}) );
+
+server.listen(config.port, function(){
   console.log('Express server listening on port ' + config.port);
 });

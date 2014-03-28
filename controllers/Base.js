@@ -1,6 +1,3 @@
-/**
- * Created by hamway on 27.03.14.
- */
 var _ = require("underscore");
 module.exports = {
     name: "base",
