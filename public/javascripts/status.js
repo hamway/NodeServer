@@ -17,7 +17,7 @@ var Status = {
         var memory = (this.params.Free_Memory / this.params.Total_Memory) * 100;
 
         $(this.chartMemory).attr('data-percent', memory.toFixed(2));
-        $(this.chartMemory).find('.percent').text(memory.toFixed(2) + '%');
+        $(this.chartMemory).find('.percent').text(memory.toFixed(2));
     },
     render: function() {
         $(this.chartMemory).easyPieChart({
@@ -29,12 +29,14 @@ var Status = {
 
         setInterval(function() {
             var self = this;
-            /*$.ajax({
+            // TODO: Socket.io
+            $.ajax({
                 url: '/status/json?memory',
-                success: function(memory) {*/
-                    $(self.chartMemory).data('easyPieChart').update(((Math.random() * (10000 - 0))/100).toFixed(2) );
-                /*}
-            });*/
+                success: function(memoryObj) {
+                    var memory = (memoryObj.Free_Memory / memoryObj.Total_Memory) * 100;
+                    $(self.chartMemory).data('easyPieChart').update(memory.toFixed(2) );
+                }
+            });
 
         }, 5000);
     }

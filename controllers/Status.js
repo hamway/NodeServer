@@ -16,8 +16,19 @@ module.exports = BaseController.extend({
         });
     },
     runJson: function(req, res, next) {
+        var status =this.getStatus('json');
         res.contentType('application/json');
-        res.send(this.getStatus('json'));
+
+        if (req.xhr){
+            status =  JSON.parse(status);
+            if (req.query.memory != undefined) {
+                res.send(JSON.stringify({'Free_Memory': status.Free_Memory, 'Total_Memory': status.Total_Memory}));
+            } else {
+                res.send();
+            }
+        } else {
+            res.send(status);
+        }
     },
     runError: function(req, res, next) {
         var v = new View(res, 'status/error');
