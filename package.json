@@ -13,6 +13,7 @@
     "less-middleware": "0.2.1-beta",
     "underscore": "1.6.0",
     "redis": "*",
-    "jasmine-node": "1.14.2"
+    "jasmine-node": "1.14.2",
+    "request-as-curl": "*"
   }
 }

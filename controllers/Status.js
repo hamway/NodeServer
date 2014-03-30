@@ -8,10 +8,14 @@ var BaseController = require("./Base"),
 module.exports = BaseController.extend({
     name: "Status",
     run: function(req, res, next) {
-        var v = new View(res, 'status/index');
+        var v = new View(res, 'status/index'),
+            status = this.getStatus('json');
+
         v.render({
             title: 'Status server',
-            status: this.getStatus('json'),
+            //cpuCount: JSON.parse(status).Cpus.length,
+            cpuCount: 0,
+            status: status,
             statusRaw: this.getStatus('raw')
         });
     },

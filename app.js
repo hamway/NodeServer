@@ -12,6 +12,7 @@ var express = require('express'),
     config = require('./config')();
 
 
+var Index = require('./controllers/Index');
 var Status = require('./controllers/Status');
 
 var app = express();
@@ -38,7 +39,9 @@ if ('development' == app.get('env')) {
 }
 
 // Routes
-app.get('/', routes.index);
+app.all('/', function(req, res, next){
+    Index.run(req, res, next);
+});
 
 // Status
 app.all('/status', function (req,res,next) {

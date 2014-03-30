@@ -20,12 +20,23 @@
 
 	<div class="row-fluid">
 		<div class="span12">
+
 	        <div class="chart">
 		        <div id="chartMemory" data-percent="0">
 			        <div class="percent">0%</div>
 			        </div>
 				<div class="label:empty">Memory</div>
 	        </div>
+
+            <% for(var unit=1; unit<=cpuCount; unit++) { %>
+            <div class="chart">
+                <div id="chartCpu<%= unit %>" data-percent="0">
+                    <div class="percent">0%</div>
+                </div>
+                <div class="label:empty">CPU <%= unit %></div>
+            </div>
+            <% } %>
+
 		</div>
 	</div>
 
