@@ -1,0 +1,5 @@
+<% for(var index=0; index <= projects.length; index++) { %>
+<li role="presentation">
+	<a href="/main/project/<%= projects[index]['id'] %>" role="menuitem" tabindex="-1"> <%= projects[index]['name'] %></a>
+</li>
+<% } %>

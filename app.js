@@ -5,14 +5,17 @@
 
 var express = require('express'),
     errorHandler = require('express-error-handler'),
-    routes = require('./routes'),
     user = require('./routes/user'),
     http = require('http'),
     path = require('path'),
     config = require('./config')();
 
 
+// Controllers init
 var Index = require('./controllers/Index');
+var Main = require('./controllers/Main');
+
+// Server status
 var Status = require('./controllers/Status');
 
 var app = express();
@@ -41,6 +44,10 @@ if ('development' == app.get('env')) {
 // Routes
 app.all('/', function(req, res, next){
     Index.run(req, res, next);
+});
+
+app.all('/main*', function(req, res, next){
+    Main.run(req, res, next);
 });
 
 // Status
