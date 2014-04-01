@@ -4,12 +4,13 @@
  */
 
 var express = require('express'),
+    ejs = require('ejs'),
     errorHandler = require('express-error-handler'),
     user = require('./routes/user'),
+    helpers = require('./helpers')(ejs),
     http = require('http'),
     path = require('path'),
     config = require('./config')();
-
 
 // Controllers init
 var Index = require('./controllers/Index');
@@ -48,6 +49,10 @@ app.all('/', function(req, res, next){
 
 app.all('/main', function(req, res, next){
     Main.run(req, res, next);
+});
+
+app.all('/main/project/:id', function(req, res, next){
+    Main.runProject(req, res, next);
 });
 
 app.all('/main/logout', function(req, res, next){

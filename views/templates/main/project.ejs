@@ -1,0 +1,35 @@
+<%- include menu %>
+
+<div class="container-fluid">
+	<% issues.forEach(function(task) { %>
+	<div class="row-fluid img-polaroid" style="margin-bottom: 5px;">
+		<div class="container-fluid">
+			<h5>
+				<%= task.title %>
+				<% for (var key in task.labels) {%>
+					<span class="label
+					<% if (task.labels[key] == 'new') {%>
+					label-success
+					<% } else if (task.labels[key] == 'bug' || task.labels[key] == 'critical' || task.labels[key] == 'fatal') { %>
+					label-important
+					<% } else if (task.labels[key] == 'todo') { %>
+					label-warning
+					<% } else if (task.labels[key] == 'idea' || task.labels[key] == 'plans') { %>
+					label-info
+					<% } else if (task.labels[key] == 'long') { %>
+					label-inverse
+					<% } %>
+					"><%= task.labels[key] %></span>
+				<% } %>
+			</h5>
+
+			<div class="span2">Author: <%= task.author.name %></div>
+			<div class="span2">State: <span class="badge
+			<% if (task.state == 'opened') {%>
+			badge-success
+			<% }%>
+			"><%= task.state %></span></div>
+		</div>
+	</div>
+	<% }) %>
+</div>

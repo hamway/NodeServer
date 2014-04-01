@@ -4,7 +4,8 @@
 var BaseController = require("./Base"),
     View = require("../views/Base"),
     request = require('request'),
-    redis = require('redis').createClient();
+    redis = require('redis').createClient(),
+    config = require('../config')();
 
 module.exports = BaseController.extend({
     name: "Index",
@@ -31,7 +32,7 @@ module.exports = BaseController.extend({
             }
 
             var self = this;
-            request.post('http://git.7gw.ru/api/v3/session', function(err, response, body) {
+            request.post(config.api + '/session', function(err, response, body) {
                 if (err) return console.error(err);
 
                 body = JSON.parse(body);

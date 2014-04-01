@@ -1,7 +1,8 @@
 var BaseController = require("./Base"),
     View = require("../views/Base"),
     request = require('request'),
-    redis = require('redis').createClient();
+    redis = require('redis').createClient(),
+    config = require('../config')();
 
 module.exports = BaseController.extend({
     name: "Main",
@@ -17,7 +18,8 @@ module.exports = BaseController.extend({
             v.render({
                 layout: 'mainLayout',
                 title: 'Small Api Server',
-                projects: projects
+                projects: projects,
+                projectId: null
             });
         });
     },
@@ -29,7 +31,9 @@ module.exports = BaseController.extend({
                 if (result == null) return self.runLogout(req, res);
 
                 result = JSON.parse(result);
-                request.get('http://git.7gw.ru/api/v3/projects?private_token=' + result.private_token, function (err, response, body) {
+
+                req.session.user_token = result.private_token;
+                request.get(config.api +'/projects?private_token=' + result.private_token, function (err, response, body) {
                     body = JSON.parse(body);
 
                     var projects = {};
@@ -53,6 +57,32 @@ module.exports = BaseController.extend({
                 })
             });
         }
+    },
+    runProject: function(req, res, next) {
+        if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
+        if (!req.session.user_id) res.redirect(301, '/');
+
+        var self = this;
+        this.getProjects(req, res, function(projects){
+            self.showProject(req, res, req.params.id, projects);
+        });
+    },
+    showProject: function(req, res, projectId, projects) {
+
+        var v = new View(res, 'main/project');
+
+        request.get(config.api + '/projects/' + projectId + '/issues?private_token=' + req.session.user_token, function(err, response, body) {
+            var user_id = req.session.user_id;
+            redis.set('user:' + user_id + ':project:' + projectId + ':issues', body);
+
+            v.render({
+                layout: 'mainLayout',
+                title: 'Small Api Server',
+                projects: projects,
+                projectId: projectId,
+                issues: JSON.parse(body)
+            });
+        })
     },
     runLogout: function(req, res, next) {
         var user_id = req.session.user_id;
