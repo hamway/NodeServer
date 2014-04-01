@@ -3,6 +3,11 @@ NodeServer
 
 Api server on NodeJS for get info from some sites
 
+Requirement
+-----------
+
+ - Redis-server >= 2.8.0
+
 Installation
 ------------
 
