@@ -3,13 +3,18 @@
  */
 var BaseController = require("./Base"),
     View = require("../views/Base"),
-    request = require('request');
+    request = require('request'),
+    redis = require('redis').createClient();
 
 module.exports = BaseController.extend({
     name: "Index",
     request: {},
     response: {},
     run: function(req, res, next) {
+
+        if (req.cookie.user_id != undefined) {
+            req.session.user_id = req.cookie.user_id;
+        }
 
         if(req.session.user_id != undefined) {
             res.redirect(301, '/main');
@@ -54,9 +59,16 @@ module.exports = BaseController.extend({
         });
     },
     saveUser: function(user) {
-        this.request.session.user_id = user.id;
+        if (this.request.body.remember != undefined && this.request.body.remember == 'on') {
+            this.request.cookie.user_id = user.id;
+        }
 
-        require('redis').createClient().set('user:' + user.id, JSON.stringify(user));
+        this.request.session.user_id = user.id;
+        redis.set('user:' + user.id, JSON.stringify(user));
+
+        if (!this.request.cookie.user_id) {
+            redis.expire('user:' + user.id, 3600*24);
+        }
 
         this.response.redirect(301, '/main');
 
