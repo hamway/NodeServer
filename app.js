@@ -46,8 +46,12 @@ app.all('/', function(req, res, next){
     Index.run(req, res, next);
 });
 
-app.all('/main*', function(req, res, next){
+app.all('/main', function(req, res, next){
     Main.run(req, res, next);
+});
+
+app.all('/main/logout', function(req, res, next){
+    Main.runLogout(req, res, next);
 });
 
 // Status

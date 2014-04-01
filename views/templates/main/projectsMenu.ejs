@@ -1,5 +1,14 @@
 <% for(var index=0; index <= projects.length; index++) { %>
 <li role="presentation">
-	<a href="/main/project/<%= projects[index]['id'] %>" role="menuitem" tabindex="-1"> <%= projects[index]['name'] %></a>
+	<a href="/main/project/<%= projects[index]['id'] %>" role="menuitem" tabindex="-1">
+		<% if (projects[index]['level'] == 'public') { %>
+		<i class="icon-globe"></i>
+		<% } else if (projects[index]['level'] == 'internal') {%>
+		<i class="icon-tag"></i>
+		<% } else { %>
+		<i class="icon-lock"></i>
+		<% } %>
+		<%= projects[index]['name'] %>
+	</a>
 </li>
 <% } %>

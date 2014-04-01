@@ -8,20 +8,15 @@ var BaseController = require("./Base"),
 
 module.exports = BaseController.extend({
     name: "Index",
-    request: {},
-    response: {},
     run: function(req, res, next) {
-
         if (req.cookies.user_id != undefined) {
             req.session.user_id = req.cookies.user_id;
         }
 
-        if(req.session.user_id != undefined) {
+        if (req.session.user_id != undefined) {
             res.redirect(301, '/main');
         }
 
-        this.request = req;
-        this.response = res;
         var post = req.body;
 
         if (post.login != undefined && post.password != undefined) {
@@ -36,16 +31,15 @@ module.exports = BaseController.extend({
             }
 
             var self = this;
-
             request.post('http://git.7gw.ru/api/v3/session', function(err, response, body) {
                 if (err) return console.error(err);
 
                 body = JSON.parse(body);
 
                 if (body.id) {
-                    self.saveUser(body);
+                    self.saveUser(req, res, body);
                 } else {
-                    this.renderView(self.request, self.response);
+                    self.renderView(req, res);
                 }
             }).form(data);
         } else {
@@ -58,19 +52,15 @@ module.exports = BaseController.extend({
             title: 'Small Api Server'
         });
     },
-    saveUser: function(user) {
-        if (this.request.body.remember != undefined && this.request.body.remember == 'on') {
-            this.request.cookies.user_id = user.id;
-        }
-
-        this.request.session.user_id = user.id;
+    saveUser: function(req, res, user) {
+        req.session.user_id = user.id;
         redis.set('user:' + user.id, JSON.stringify(user));
 
-        if (!this.request.cookie.user_id) {
+        if (req.body.remember != undefined && req.body.remember == 'on') {
+            res.cookie('user_id',user.id, {path: '/', httpOnly: true});
+        } else {
             redis.expire('user:' + user.id, 3600*24);
         }
-
-        this.response.redirect(301, '/main');
-
+        res.redirect(301, '/main');
     }
 });
