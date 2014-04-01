@@ -1,14 +1,7 @@
+var crypto = require('crypto');
+
 module.exports = function(ejs) {
-     ejs.filters.taskLabels = function(labels) {
-        var result = "";
-        for (var key in labels) {
-            var line = "<span class=\"label\">";
-            line += labels[key];
-            line += '</span>';
-
-            result += line;
-        }
-
-        return result;
+     ejs.filters.md5Hash = function(string) {
+         return crypto.createHash('md5').update(string).digest('hex');
     };
 };

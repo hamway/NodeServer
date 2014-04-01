@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -6,7 +5,6 @@
 var express = require('express'),
     ejs = require('ejs'),
     errorHandler = require('express-error-handler'),
-    user = require('./routes/user'),
     helpers = require('./helpers')(ejs),
     http = require('http'),
     path = require('path'),
@@ -53,6 +51,10 @@ app.all('/main', function(req, res, next){
 
 app.all('/main/project/:id', function(req, res, next){
     Main.runProject(req, res, next);
+});
+
+app.all('/main/profile', function(req, res, next){
+    Main.runProfile(req, res, next);
 });
 
 app.all('/main/logout', function(req, res, next){

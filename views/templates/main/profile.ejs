@@ -1,0 +1,27 @@
+<%- include menu %>
+
+<div class="container-fluid">
+	<h4><%= user.name %> <span class="badge <% if (user.state == 'active') {%> badge-success <% } %>"><%= user.state %></span></h4>
+	<div class="row-fluid span1">
+		<img class="img-rounded" src="https://gravatar.com/avatar/<%=: user.email | md5Hash %>?s=80&d=mm"/>
+	</div>
+
+	<div class="container-fluid span10">
+		<p>
+			Username: <%= user.username %>
+		</p>
+		<p>
+			Email: <%= user.email %>
+		</p>
+		<p>
+			Skype: <%= user.skype %>
+		</p>
+		<p>
+			Twitter: <%= user.twitter %>
+		</p>
+		<p>
+			Linkedin: <%= user.linkedin %>
+		</p>
+	</div>
+
+</div>

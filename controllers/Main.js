@@ -6,10 +6,12 @@ var BaseController = require("./Base"),
 
 module.exports = BaseController.extend({
     name: "Main",
-    run: function(req, res, next) {
-
+    init: function(req, res, next) {
         if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
-
+        if (!req.session.user_id) res.redirect(301, '/');
+    },
+    run: function(req, res, next) {
+        if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
         if (!req.session.user_id) res.redirect(301, '/');
 
         this.getProjects(req, res, function(projects){
@@ -83,6 +85,24 @@ module.exports = BaseController.extend({
                 issues: JSON.parse(body)
             });
         })
+    },
+    runProfile: function(req, res, next) {
+        this.init(req, res, next);
+
+        var user_id = req.session.user_id;
+        this.getProjects(req, res, function(projects){
+            redis.get('user:' + user_id, function(err, result) {
+                var v = new View(res, 'main/profile');
+
+                v.render({
+                    layout: 'mainLayout',
+                    title: 'Small Api Server',
+                    projects: projects,
+                    projectId: null,
+                    user: JSON.parse(result)
+                });
+            });
+        });
     },
     runLogout: function(req, res, next) {
         var user_id = req.session.user_id;
