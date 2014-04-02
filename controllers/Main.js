@@ -9,10 +9,11 @@ module.exports = BaseController.extend({
     init: function(req, res, next) {
         if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
         if (!req.session.user_id) res.redirect(301, '/');
+
+        this.setDB(req.db,['users', 'projects']);
     },
     run: function(req, res, next) {
-        if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
-        if (!req.session.user_id) res.redirect(301, '/');
+        this.init(req, res, next);
 
         this.getProjects(req, res, function(projects){
             var v = new View(res, 'main/index');
@@ -29,16 +30,17 @@ module.exports = BaseController.extend({
         var user_id = req.session.user_id;
         if (user_id != undefined) {
             var self = this;
-            redis.get('user:' + user_id, function (err, result) {
-                if (result == null) return self.runLogout(req, res);
+            this.model('users').select(user_id, function (err, result) {
+                if (result.length == 0) return self.runLogout(req, res);
 
-                result = JSON.parse(result);
+                result = result[0];
 
                 req.session.user_token = result.private_token;
                 request.get(config.api +'/projects?private_token=' + result.private_token, function (err, response, body) {
                     body = JSON.parse(body);
 
-                    var projects = {};
+                    var projects = {},
+                        save = [];
 
                     for(var key in body) {
                         var project = body[key],
@@ -50,8 +52,11 @@ module.exports = BaseController.extend({
                             name: project.name,
                             level: level
                         };
-                        redis.set('user:' + user_id + ':project:' + project.id, JSON.stringify(project));
+
+                        save[key] = project;
                     }
+
+                    self.model('projects').insert(save);
 
                     projects.length = key;
 
@@ -61,8 +66,7 @@ module.exports = BaseController.extend({
         }
     },
     runProject: function(req, res, next) {
-        if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
-        if (!req.session.user_id) res.redirect(301, '/');
+        this.init(req, res, next);
 
         var self = this;
         this.getProjects(req, res, function(projects){

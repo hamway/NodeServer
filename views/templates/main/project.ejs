@@ -4,10 +4,19 @@
 	<% issues.forEach(function(task) { %>
 	<div class="row-fluid img-polaroid" style="margin-bottom: 5px;">
 		<div class="container-fluid">
-			<h5>
+			<h4>#<%= task.iid %>
 				<%= task.title %>
+				<span class="badge
+				<% if (task.state == 'opened') {%>
+				badge-success
+				<% }%>
+				"><%= task.state %></span>
+			</h4>
+
+			<div class="span2">Author: <%= task.author.name %></div>
+			<div class="span2">Tags:
 				<% for (var key in task.labels) {%>
-					<span class="label
+				<span class="label
 					<% if (task.labels[key] == 'new') {%>
 					label-success
 					<% } else if (task.labels[key] == 'bug' || task.labels[key] == 'critical' || task.labels[key] == 'fatal') { %>
@@ -21,14 +30,12 @@
 					<% } %>
 					"><%= task.labels[key] %></span>
 				<% } %>
-			</h5>
+			</div>
 
-			<div class="span2">Author: <%= task.author.name %></div>
-			<div class="span2">State: <span class="badge
-			<% if (task.state == 'opened') {%>
-			badge-success
-			<% }%>
-			"><%= task.state %></span></div>
+			<div class="row-fluidspan12">
+				<h5>Задача</h5>
+				<p> <%= task.description %></p>
+			</div>
 		</div>
 	</div>
 	<% }) %>

@@ -18,6 +18,6 @@ module.exports.prototype = {
     },
     collection: function() {
         if(this._collection) return this._collection;
-        return this._collection = this.db.collection('fastdelivery-content');
+        return this._collection = this.db.collection(this.name);
     }
 }
