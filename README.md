@@ -11,10 +11,28 @@ Requirement
 Installation
 ------------
 
+Static installer
+
     npm -g install bower
 	bower install
+
+Package installer
+
 	npm install
 	npm start
+
+Builder installer
+
+	npm -g install gulp
+	gulp
+
+Clean build files
+
+	gulp clean
+
+Clean all build files (delete build and site public files)
+
+	gulp cleanAll
 
 Current version
 ---------------

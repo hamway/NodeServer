@@ -1,19 +1,42 @@
 {
-  "name": "application-name",
+  "name": "NodeServer",
   "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
+  "description": "Gitlab Task Desk",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
   },
   "dependencies": {
-    "express": "3.5.1",
-    "ejs": "1.0.0",
-    "express-ejs-layouts": "0.3.1",
-    "express-error-handler": "0.5.4",
-    "less-middleware": "0.2.1-beta",
-    "underscore": "1.6.0",
-    "redis": "*",
-    "jasmine-node": "1.14.2",
-    "request": "*"
-  }
+    "ejs": "^1.0.0",
+    "express": "^3.5.1",
+    "express-ejs-layouts": "^0.3.1",
+    "express-error-handler": "^0.5.4",
+    "less-middleware": "^0.2.1-beta",
+    "marked": "^0.3.2",
+    "redis": "^0.10.1",
+    "request": "^2.34.0",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "gulp-clean": "^0.2.4",
+    "gulp-concat": "^2.2.0",
+    "gulp-concat-css": "^0.1.4",
+    "gulp-notify": "^1.2.5",
+    "gulp-rename": "^1.2.0",
+    "jasmine-node": "^1.14.2"
+  },
+  "scripts": {
+    "test": "jasmone-node ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hamway/NodeServer.git"
+  },
+  "author": "Evgeny Anoykin <hamway0611@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hamway/NodeServer/issues"
+  },
+  "homepage": "https://github.com/hamway/NodeServer"
 }

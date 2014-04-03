@@ -1,34 +1,39 @@
 <%- include menu %>
 
+<div class="container-fluid page-header">
+	<div class="row-fluid snap3">
+		<h4>
+			Web:
+			<a href="<%=: projects | getProjectUrl:projectId %>"><%=: projects | getProjectUrl:projectId %></a>
+			<i class="<%=: projects | projectLevelIcon:projectId %>"></i>
+		</h4>
+	</div>
+</div>
+
 <div class="container-fluid">
 	<% issues.forEach(function(task) { %>
 	<div class="row-fluid img-polaroid" style="margin-bottom: 5px;">
 		<div class="container-fluid">
-			<h5>
-				<%= task.title %>
-				<% for (var key in task.labels) {%>
-					<span class="label
-					<% if (task.labels[key] == 'new') {%>
-					label-success
-					<% } else if (task.labels[key] == 'bug' || task.labels[key] == 'critical' || task.labels[key] == 'fatal') { %>
-					label-important
-					<% } else if (task.labels[key] == 'todo') { %>
-					label-warning
-					<% } else if (task.labels[key] == 'idea' || task.labels[key] == 'plans') { %>
-					label-info
-					<% } else if (task.labels[key] == 'long') { %>
-					label-inverse
-					<% } %>
-					"><%= task.labels[key] %></span>
-				<% } %>
-			</h5>
+			<h4>#<%= task.iid %>
+				<a href="<%=: projects | getIssuesUrl:projectId,task.iid %>"><%= task.title %></a>
+				<span class="badge
+				<% if (task.state == 'opened') {%>
+				badge-success
+				<% }%>
+				"><%= task.state %></span>
+			</h4>
 
 			<div class="span2">Author: <%= task.author.name %></div>
-			<div class="span2">State: <span class="badge
-			<% if (task.state == 'opened') {%>
-			badge-success
-			<% }%>
-			"><%= task.state %></span></div>
+			<div class="span2">Tags:
+				<% for (var key in task.labels) {%>
+				<span class="label <%=: task.labels[key] | labelColor %>"><%= task.labels[key] %></span>
+				<% } %>
+			</div>
+
+			<div class="row-fluid span12">
+				<h5>Задача</h5>
+				<p> <%= task.description %></p>
+			</div>
 		</div>
 	</div>
 	<% }) %>

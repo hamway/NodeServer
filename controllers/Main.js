@@ -48,6 +48,7 @@ module.exports = BaseController.extend({
                         projects[key] = {
                             id: project.id,
                             name: project.name,
+                            url: project.web_url,
                             level: level
                         };
                         redis.set('user:' + user_id + ':project:' + project.id, JSON.stringify(project));

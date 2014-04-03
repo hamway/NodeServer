@@ -1,13 +1,7 @@
 <% for(var index=0; index <= projects.length; index++) { %>
 <li role="presentation" <% if (projectId == projects[index]['id']) {%>class="active"<%}%>>
 	<a href="/main/project/<%= projects[index]['id'] %>" role="menuitem" tabindex="-1">
-		<% if (projects[index]['level'] == 'public') { %>
-			<i class="icon-globe"></i>
-		<% } else if (projects[index]['level'] == 'internal') {%>
-			<i class="icon-tag"></i>
-		<% } else { %>
-			<i class="icon-lock"></i>
-		<% } %>
+		<i class="<%=: projects[index] | projectLevelIcon %>"></i>
 
 		<%= projects[index]['name'] %>
 	</a>
