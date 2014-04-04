@@ -1,4 +1,8 @@
 .idea/*
+build/*
+!build/.gitkeep
 node_modules
-public/components/*
-public/stylesheets/*.css
+static/components/*
+static/stylesheets/*.css
+public/*
+!public/.gitkeep

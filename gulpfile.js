@@ -2,65 +2,183 @@
  * Created by hamway on 03.04.14.
  */
 
-var gulp = require('gulp'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat'),
+var gulp      = require('gulp'),
+    rename    = require('gulp-rename'),
+    concat    = require('gulp-concat'),
+    jsmin     = require('gulp-jsmin'),
+    less      = require('gulp-less'),
+    cssmin    = require('gulp-minify-css'),
     concatCss = require('gulp-concat-css'),
-    clean = require('gulp-clean'),
-    notify = require("gulp-notify");
+    clean     = require('gulp-clean'),
+    notify    = require("gulp-notify"),
+    debug     = require("gulp-debug");
 
 var dirs = {
-    build: './build/',
-    buildJS: './build/js/',
-    buildCSS: './build/css/',
-    components: './public/components/',
-    publicJS: './public/javascripts/',
-    publicCSS: './public/stylesheets/',
-    publicIMG: './public/img/'
+    build:      './build/',
+    buildJS:    './build/js/',
+    buildCSS:   './build/css/',
+    components: './static/components/',
+    static:     './static/',
+    staticJS:   './static/javascripts/',
+    staticCSS:  './static/stylesheets/',
+    public:     './public/',
+    publicJS:   './public/js/',
+    publicCSS:  './public/css/',
+    publicIMG:  './public/img/'
 };
 
-var buildsJS = [
+var jsLibs = [
     dirs.components + 'jquery/dist/jquery.min.js',
     dirs.components + 'bootstrap/docs/assets/js/bootstrap.min.js'
-    //dirs.components + 'bootstrap/docs/assets/js/html5shiv.js'
 ];
 
-var builsCss = [
+var buildsJS = [];
+
+
+var buildCss = [
     dirs.components + 'bootstrap/docs/assets/css/bootstrap.css',
     dirs.components + 'bootstrap/docs/assets/css/bootstrap-responsive.css'
 ];
 
-gulp.task('default', function() {
+var buildLess = [];
 
-    gulp.src(buildsJS)
-        .pipe(gulp.dest(dirs.buildJS))
-        .pipe(concat('all.min.js'))
+var BuildCopy = {
+    js: [
+        dirs.components + 'bootstrap/docs/assets/js/html5shiv.js'
+    ]
+};
+
+var cssMinifyOpts = {
+    keepBreaks: true,
+    removeEmpty: true,
+    keepSpecialComments: true
+};
+
+gulp.task('default', function() {
+    gulp.start('scripts', 'styles', 'status')
+    ;
+});
+
+gulp.task('publish', function() {
+    gulp.start('concat', 'compress', 'public');
+})
+
+gulp.task('scripts', function() {
+    if (buildsJS.length != 0)
+        gulp.src(buildsJS)
+            .pipe(gulp.dest(dirs.buildJS))
+        ;
+});
+
+gulp.task('styles', function() {
+    gulp.src(buildCss)
+        .pipe(gulp.dest(dirs.buildCSS))
+    ;
+
+    if (buildLess.length != 0)
+        gulp.src(buildLess)
+            .pipe(less())
+            .pipe(gulp.dest(dirs.buildCSS))
+        ;
+});
+
+gulp.task('concat', function() {
+
+    jsLibs = jsLibs.concat([dirs.buildJS + '*.js'])
+
+    gulp.src(jsLibs)
+        .pipe(concat('all.js'))
         .pipe(gulp.dest(dirs.build))
+    ;
+
+    gulp.src(dirs.buildCSS + '*.css')
+        .pipe(concatCss('all.css'))
+        .pipe(gulp.dest(dirs.build))
+    ;
+});
+
+gulp.task('compress', function(){
+    gulp.src(dirs.build + 'all.css')
+        .pipe(cssmin(cssMinifyOpts))
+        .pipe(rename(function(path) {
+            path.basename += '.min';
+        }))
+        .pipe(gulp.dest(dirs.build));
+
+    gulp.src(dirs.build + 'all.js')
+        //.pipe(jsmin())
+        .pipe(rename(function(path) {
+            path.basename += '.min';
+        }))
+        .pipe(gulp.dest(dirs.build));
+
+});
+
+gulp.task('public', function() {
+    gulp.src(dirs.build + 'all.min.js')
         .pipe(gulp.dest(dirs.publicJS))
     ;
 
     gulp.src(dirs.components + 'jquery/dist/jquery.min.map')
-        .pipe(gulp.dest(dirs.publicJS));
+        .pipe(gulp.dest(dirs.publicJS))
+    ;
 
-    gulp.src(builsCss).pipe(gulp.dest(dirs.buildCSS))
-        .pipe(concatCss('all.min.css'))
-        .pipe(gulp.dest(dirs.build))
+    gulp.src(BuildCopy.js)
+        .pipe(gulp.dest(dirs.publicJS))
+    ;
+
+    gulp.src(dirs.build + 'all.min.css')
         .pipe(gulp.dest(dirs.publicCSS))
-        //.pipe(notify("Build complete!!!"))
     ;
 
     gulp.src(dirs.components + 'bootstrap/img/*.png')
-        .pipe(gulp.dest(dirs.publicIMG));
+        .pipe(gulp.dest(dirs.publicIMG))
+    ;
+
+    gulp.src(dirs.static + 'favicon.ico')
+        .pipe(gulp.dest(dirs.public))
+        .pipe(notify('Build complete'))
+    ;
+});
+
+gulp.task('status', function() {
+    gulp.src([
+        dirs.staticCSS + 'style.less',
+        dirs.staticCSS + 'chart.less'])
+        .pipe(less())
+        .pipe(cssmin(cssMinifyOpts))
+        .pipe(concat('status.min.css'))
+        .pipe(gulp.dest(dirs.publicCSS));
+
+    gulp.src(dirs.staticJS + 'status.js')
+        .pipe(jsmin())
+        .pipe(rename(function(path){
+            path.basename += '.min';
+        }))
+        .pipe(gulp.dest(dirs.publicJS));
 });
 
 gulp.task('clean', function() {
-    gulp.src(dirs.build, {read:false}).pipe(clean());
+   gulp.start('cleanBuilds');
 });
 
-gulp.task('cleanAll', function() {
-    gulp.src(dirs.build, {read:false}).pipe(clean());
+gulp.task('destroy', function(){
+    gulp.start('cleanBuilds', 'cleanPublic');
+});
+
+gulp.task('cleanBuilds', function() {
+    var cleanDirs = [
+        dirs.buildJS + '*.js',
+        dirs.buildCSS + '*.css',
+        dirs.build + 'all*.js',
+        dirs.build + 'all*.css',
+    ];
+    gulp.src(cleanDirs, {read:false}).pipe(clean());
+});
+
+gulp.task('cleanPublic', function() {
     gulp.src(dirs.publicIMG, {read:false}).pipe(clean());
-    gulp.src(dirs.publicCSS + 'all.min.css', {read:false}).pipe(clean());
-    gulp.src(dirs.publicJS + 'all.min.js', {read:false}).pipe(clean());
-    gulp.src(dirs.publicJS + 'jquery.min.map', {read:false}).pipe(clean());
+    gulp.src(dirs.publicCSS, {read:false}).pipe(clean());
+    gulp.src(dirs.publicJS, {read:false}).pipe(clean());
+    gulp.src(dirs.public + 'favicon.ico', {read:false}).pipe(clean());
 });
