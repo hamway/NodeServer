@@ -31,7 +31,7 @@
     "jasmine-node": "^1.14.2"
   },
   "scripts": {
-    "test": "jasmone-node ./tests"
+    "test": "jasmine-node ./tests"
   },
   "repository": {
     "type": "git",

@@ -135,6 +135,10 @@ gulp.task('public', function() {
         .pipe(gulp.dest(dirs.publicIMG))
     ;
 
+    gulp.src(dirs.static + 'images/*.png')
+        .pipe(gulp.dest(dirs.publicIMG))
+    ;
+
     gulp.src(dirs.static + 'favicon.ico')
         .pipe(gulp.dest(dirs.public))
         .pipe(notify('Build complete'))
