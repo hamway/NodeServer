@@ -65,7 +65,7 @@ module.exports = function(ejs) {
     };
 
     /**
-     * Получение ссылки на такет проекта.
+     * Получение ссылки на тикет проекта.
      * @param projects
      * @param id
      * @param issue

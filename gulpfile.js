@@ -14,17 +14,17 @@ var gulp      = require('gulp'),
     debug     = require("gulp-debug");
 
 var dirs = {
-    build:      './build/',
-    buildJS:    './build/js/',
-    buildCSS:   './build/css/',
-    components: './static/components/',
-    static:     './static/',
-    staticJS:   './static/javascripts/',
-    staticCSS:  './static/stylesheets/',
-    public:     './public/',
-    publicJS:   './public/js/',
-    publicCSS:  './public/css/',
-    publicIMG:  './public/img/'
+    build:      'build/',
+    buildJS:    'build/js/',
+    buildCSS:   'build/css/',
+    components: 'static/components/',
+    static:     'static/',
+    staticJS:   'static/javascripts/',
+    staticCSS:  'static/stylesheets/',
+    public:     'public/',
+    publicJS:   'public/js/',
+    publicCSS:  'public/css/',
+    publicIMG:  'public/img/'
 };
 
 var jsLibs = [
@@ -61,7 +61,7 @@ gulp.task('default', function() {
 
 gulp.task('publish', function() {
     gulp.start('concat', 'compress', 'public');
-})
+});
 
 gulp.task('scripts', function() {
     if (buildsJS.length != 0)
