@@ -1,0 +1,144 @@
+<script type="text/javascript">
+    function setBind() {
+        $('.filter-project-select').off('click');
+        $('.badge .close').off('click');
+
+        $('.filter-project-select').on('click',function(){
+            select_project(this);
+        });
+
+        $('.badge .close').on('click',function(){
+            unselect_project(this);
+        });
+    };
+
+    function sessionManager(method, key, value) {
+        var currentKeyResult = sessionStorage[key];
+
+        if (currentKeyResult != undefined) {
+            currentKeyResult = currentKeyResult.split(',');
+        }
+
+        switch(method) {
+            case "set":
+                if (currentKeyResult != undefined) {
+                    currentKeyResult.push(value);
+                    sessionStorage.setItem(key,currentKeyResult.join(','));
+                } else {
+                    sessionStorage.setItem(key, value);
+                }
+                return true;
+            break;
+            case "update":
+                if (currentKeyResult != undefined) {
+                    for (var index in currentKeyResult) {
+                        var element = currentKeyResult[index];
+
+                        if(element == value.old) {
+                            currentKeyResult[index] = value.new;
+                        }
+                    }
+                    sessionStorage.setItem(key,currentKeyResult.join(','));
+                    return true;
+                } else
+                    return false;
+            break;
+            case "remove":
+                if (currentKeyResult != undefined) {
+                    if (currentKeyResult.length > 1) {
+                        var id;
+                        for (var index in currentKeyResult) {
+                            var element = currentKeyResult[index];
+
+                            if(element == value) {
+                                id = index;
+                            }
+                        }
+
+                        if(id != undefined) {
+                            currentKeyResult.splice(id,1);
+                            sessionStorage.setItem(key,currentKeyResult.join(','));
+                        }
+                    } else {
+                        sessionStorage.removeItem(key);
+                    }
+                    return true;
+                } else
+                    return false;
+            break;
+            case "get":
+                return sessionStorage[key];
+            break;
+            default:
+                return false;
+        }
+    }
+
+    function select_project(element) {
+        var id = $(element).data('id'),
+            name = $(element).text(),
+            link = $(element).attr('href');
+
+        if (sessionManager('set', 'projectFilter', id)) {
+            var html = '<div class="badge badge-info" style="line-height: 20px;">';
+            html += '<a class="close" href="' + link + '" data-name="' + name + '" data-id="' + id + '">&times;</a>' + name + '</div>';
+            $(element).parent().html(html);
+            setBind();
+
+            setFilter();
+        }
+    }
+
+    function unselect_project(element) {
+        var id = $(element).data('id'),
+            name = $(element).data('name'),
+            link = $(element).attr('href');
+
+        if (sessionManager('remove', 'projectFilter', id)) {
+            var html = '<a href="javascript:void(0);" class="filter-project-select" data-id="' + id + '">' + name + '</a>';
+            $(element).parent().parent().html(html);
+            setBind();
+
+            setFilter();
+        }
+    }
+
+    function setFilter() {
+        $.ajax({
+            url: '?filter=project',
+            type: 'post',
+            data: {projects: sessionManager('get', 'projectFilter')},
+            success: function(result) {
+                $('#issuesList').html(result);
+            }
+        })
+    }
+
+    function initFilter() {
+        sessionStorage.removeItem('projectFilter')
+    }
+
+    function setScroll() {
+        var position = $('#projectFilter').position();
+
+        $('#projectFilter').css({position: 'fixed', top: position.top + "px", left: position.left + "px"});
+
+    }
+
+    $(function() {
+        setBind();
+        initFilter();
+        setScroll();
+    })
+</script>
+
+<div class="span4 pull-right img-polaroid" id="projectFilter">
+    <h4>Filter</h4>
+    <% for(var index=0; index <= projects.length; index++) { %>
+    <div class="row-fluid">
+        <div class="container-fluid">
+            <a href="javascript:void(0);" class="filter-project-select" data-id="<%= projects[index]['id'] %>"><%=: projects | getProjectName:projects[index]['id'] %></a>
+        </div>
+    </div>
+    <% } %>
+</div>

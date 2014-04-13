@@ -11,18 +11,57 @@ module.exports = BaseController.extend({
         if (!req.session.user_id) res.redirect(301, '/');
     },
     run: function(req, res, next) {
-        if (req.cookies.user_id != undefined) req.session.user_id = req.cookies.user_id;
-        if (!req.session.user_id) res.redirect(301, '/');
+        this.init(req, res, next);
 
         this.getProjects(req, res, function(projects){
-            var v = new View(res, 'main/index');
 
-            v.render({
-                layout: 'mainLayout',
-                title: 'Small Api Server',
-                projects: projects,
-                projectId: null
-            });
+            if (req.xhr){
+                var user_id = req.session.user_id;
+                if (user_id != undefined) {
+                    if(req.query.filter == 'project') {
+                        redis.get('user:' + user_id + ':issues', function (err, result) {
+                            result = JSON.parse(result);
+
+                            var issues = [];
+
+                            var filters = req.param('projects');
+                            if (filters) {
+                                filters = filters.split(',');
+                                for (var index in result) {
+                                    for (var findex in filters) {
+                                        if (result[index]['project_id'] == filters[findex]) issues.push(result[index]);
+                                    }
+                                }
+                            } else {
+                                issues = result;
+                            }
+
+                            console.log(issues);
+                            var v = new View(res, 'main/mainIssuesList');
+
+                            v.render({
+                                layout: false,
+                                projects: projects,
+                                issues: issues
+                            });
+                        });
+                    } else res.send();
+                }
+            } else {
+                request.get(config.api + '/issues?private_token=' + req.session.user_token, function (err, response, body) {
+                    var user_id = req.session.user_id;
+                    redis.set('user:' + user_id + ':issues', body);
+                    var v = new View(res, 'main/index');
+
+                    v.render({
+                        layout: 'mainLayout',
+                        title: 'Small Api Server',
+                        projects: projects,
+                        issues: JSON.parse(body),
+                        projectId: null
+                    });
+                });
+            }
         });
     },
     getProjects: function(req, res, callback) {

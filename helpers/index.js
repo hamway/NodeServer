@@ -54,6 +54,21 @@ module.exports = function(ejs) {
     };
 
     /**
+     * Получение имени проекта по id
+     * @param projects
+     * @param id
+     * @returns {string}
+     */
+    ejs.filters.getProjectName = function(projects, id) {
+        var project = this.getProjectInfo(projects, id);
+        return project.name;
+    };
+
+    ejs.filters.getProjectLocalUrl = function(id) {
+        return 'main/project/' + id;
+    };
+
+    /**
      * Получение ссылки на страницу проекта.
      * @param projects
      * @param id
@@ -108,13 +123,4 @@ module.exports = function(ejs) {
 
         return color;
     };
-
-    /**
-     * Преобразование markedown в html.
-     * @param string
-     * @returns {*}
-     */
-    ejs.filters.marked2Html = function(string) {
-        return ejs.compile(marked(string));
-    }
 };
