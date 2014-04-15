@@ -2,7 +2,7 @@
     <% issues.forEach(function(task) { %>
     <div class="row-fluid img-polaroid span8" style="margin-bottom: 5px; margin-left:0px;">
         <div class="container-fluid">
-            <h4>#<%= task.iid %>
+            <h4 <% if (task.state == 'closed') {%>class="strike"<% } %>>#<%= task.iid %>
                 <a href="<%=: projects | getIssuesUrl:task.project_id,task.iid %>"><%= task.title %></a>
 				<span class="badge
 				<% if (task.state == 'opened') {%>

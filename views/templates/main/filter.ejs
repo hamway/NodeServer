@@ -110,12 +110,13 @@
             data: {projects: sessionManager('get', 'projectFilter')},
             success: function(result) {
                 $('#issuesList').html(result);
+                marktransform();
             }
         })
     }
 
     function initFilter() {
-        sessionStorage.removeItem('projectFilter')
+        sessionStorage.removeItem('projectFilter');
     }
 
     function setScroll() {
@@ -133,12 +134,29 @@
 </script>
 
 <div class="span4 pull-right img-polaroid" id="projectFilter">
-    <h4>Filter</h4>
-    <% for(var index=0; index <= projects.length; index++) { %>
-    <div class="row-fluid">
-        <div class="container-fluid">
-            <a href="javascript:void(0);" class="filter-project-select" data-id="<%= projects[index]['id'] %>"><%=: projects | getProjectName:projects[index]['id'] %></a>
+    <div class="span4">
+        <h4>Filter</h4>
+        <% for(var index=0; index <= projects.length; index++) { %>
+        <div class="row-fluid">
+            <div class="container-fluid">
+                <a href="javascript:void(0);" class="filter-project-select" data-id="<%= projects[index]['id'] %>"><%=: projects | getProjectName:projects[index]['id'] %></a>
+            </div>
         </div>
+        <% } %>
     </div>
-    <% } %>
+    <!--div class="span4">
+        <h4>Sort by</h4>
+        <div class="row-fluid">
+            <div class="container-fluid">
+            <div class="badge badge-info" style="line-height: 20px;">
+                <a class="close" href="javascript:void(0);" data-name="Project" data-id="1">&times;</a>Project
+            </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="container-fluid">
+                <a href="javascript:void(0);" class="filter-sort-select" data-id="2">Status</a>
+            </div>
+        </div>
+    </div-->
 </div>

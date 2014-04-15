@@ -40,7 +40,9 @@ var buildCss = [
     dirs.components + 'bootstrap/docs/assets/css/bootstrap-responsive.css'
 ];
 
-var buildLess = [];
+var buildLess = [
+    dirs.staticCSS + 'style.less'
+];
 
 var BuildCopy = {
     js: [

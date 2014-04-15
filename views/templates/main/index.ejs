@@ -1,6 +1,17 @@
 <%- include menu %>
+<script type="text/javascript" src="/js/marked.js"></script>
 
 <%- include filter %>
 <div  id="issuesList">
 <%- include mainIssuesList %>
 </div>
+<script type="text/javascript">
+    function marktransform() {
+        $('.task-description').each(function(i,c) {
+            $(c).parent().html(marked($(c).text()));
+        });
+    }
+    $(function(){
+        marktransform();
+    })
+</script>
